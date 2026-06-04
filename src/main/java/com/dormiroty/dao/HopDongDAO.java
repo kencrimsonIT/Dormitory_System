@@ -10,4 +10,6 @@ public interface HopDongDAO {
     boolean save(HopDong hopDong);
     boolean update(HopDong hopDong);
     boolean delete(String maHopDong);
+    double calculateTotalTienCoc();
+    int countTenantsByMaPhong(String maPhong);
 }

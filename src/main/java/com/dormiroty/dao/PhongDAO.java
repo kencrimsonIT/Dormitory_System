@@ -11,4 +11,5 @@ public interface PhongDAO {
     boolean save(Phong phong);
     boolean update(Phong phong);
     boolean delete(String maPhong);
+    List<Phong> findByToaNha(String maToaNha);
 }

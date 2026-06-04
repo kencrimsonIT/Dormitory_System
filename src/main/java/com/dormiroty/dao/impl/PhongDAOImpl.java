@@ -123,4 +123,27 @@ public class PhongDAOImpl implements PhongDAO {
         }
         return false;
     }
+    @Override
+    public List<Phong> findByToaNha(String maToaNha) {
+        List<Phong> list = new ArrayList<>();
+        String sql = "SELECT * FROM PHONG WHERE MATOANHA = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, maToaNha);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Phong p = new Phong();
+                    p.setMaPhong(rs.getString("MAPHONG").trim());
+                    p.setMaLoaiPhong(rs.getString("MALOAIPHONG").trim());
+                    p.setMaToaNha(rs.getString("MATOANHA").trim());
+                    p.setTinhTrang(rs.getString("TinhTrang"));
+                    list.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }

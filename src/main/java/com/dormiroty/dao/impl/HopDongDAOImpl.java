@@ -132,4 +132,35 @@ public class HopDongDAOImpl implements HopDongDAO {
         }
         return false;
     }
+    @Override
+    public double calculateTotalTienCoc() {
+        String sql = "SELECT SUM(TienCoc) FROM HopDong";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+    @Override
+    public int countTenantsByMaPhong(String maPhong) {
+        String sql = "SELECT COUNT(*) FROM HopDong WHERE MaPhong = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, maPhong);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

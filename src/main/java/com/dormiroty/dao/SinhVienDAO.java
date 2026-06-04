@@ -10,4 +10,6 @@ public interface SinhVienDAO {
     boolean save(SinhVien sv);
     boolean update(SinhVien sv);
     boolean delete(int mssv);
+    List<SinhVien> findByName(String name);
+    int countTotalSinhVien();
 }

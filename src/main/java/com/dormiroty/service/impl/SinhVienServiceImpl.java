@@ -35,4 +35,13 @@ public class SinhVienServiceImpl implements SinhVienService {
     public boolean delete(int mssv) {
         return sinhVienDAO.delete(mssv);
     }
+
+    @Override
+    public List<SinhVien> findByName(String name) {
+        return sinhVienDAO.findByName(name);
+    }
+    @Override
+    public int countTotalSinhVien() {
+        return sinhVienDAO.countTotalSinhVien();
+    }
 }

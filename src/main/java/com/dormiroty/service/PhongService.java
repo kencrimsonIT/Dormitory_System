@@ -11,4 +11,5 @@ public interface PhongService {
     boolean create(Phong phong);
     boolean update(Phong phong);
     boolean delete(String maPhong);
+    List<Phong> findByToaNha(String maToaNha);
 }

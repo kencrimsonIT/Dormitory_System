@@ -10,4 +10,6 @@ public interface SinhVienService {
     boolean create(SinhVien sv);
     boolean update(SinhVien sv);
     boolean delete(int mssv);
+    List<SinhVien> findByName(String name);
+    int countTotalSinhVien();
 }
