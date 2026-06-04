@@ -10,11 +10,12 @@ public class SinhVien {
     private String NganhHoc;
     private String Email;
     private String SDT;
+    private String MaDCS;
 
     public SinhVien() {
     }
 
-    public SinhVien(int MSSV, String hoTen, String gioiTinh, LocalDateTime ngaySinh, String nganhHoc, String email, String SDT) {
+    public SinhVien(int MSSV, String hoTen, String gioiTinh, LocalDateTime ngaySinh, String nganhHoc, String email, String SDT, String maDCS) {
         this.MSSV = MSSV;
         HoTen = hoTen;
         GioiTinh = gioiTinh;
@@ -22,6 +23,7 @@ public class SinhVien {
         NganhHoc = nganhHoc;
         Email = email;
         this.SDT = SDT;
+        MaDCS = maDCS;
     }
 
     public int getMSSV() {
@@ -79,4 +81,7 @@ public class SinhVien {
     public void setSDT(String SDT) {
         this.SDT = SDT;
     }
+
+    public String getMaDCS() { return MaDCS; }
+    public void setMaDCS(String maDCS) { MaDCS = maDCS; }
 }

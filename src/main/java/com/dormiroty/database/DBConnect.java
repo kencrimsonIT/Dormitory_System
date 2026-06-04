@@ -15,6 +15,8 @@ public class DBConnect {
             config.setDriverClassName(DBProperties.getProperty("db.driver"));
             config.setJdbcUrl(DBProperties.getProperty("db.url"));
 
+            config.setUsername(DBProperties.getProperty("db.user"));
+            config.setPassword(DBProperties.getProperty("db.password"));
             // HikariCP optimization settings
             config.setMaximumPoolSize(Integer.parseInt(DBProperties.getProperty("db.pool.maximumPoolSize")));
             config.setMinimumIdle(Integer.parseInt(DBProperties.getProperty("db.pool.minimumIdle")));
