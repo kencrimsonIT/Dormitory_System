@@ -1,7 +1,6 @@
 package com.dormiroty.dao;
 
 import com.dormiroty.entity.NhanVien;
-
 import java.util.List;
 
 public interface NhanVienDAO {

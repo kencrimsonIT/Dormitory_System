@@ -13,20 +13,23 @@ import java.util.List;
 
 public class DienChinhSachDAOImpl implements DienChinhSachDAO {
 
+    private DienChinhSach mapResultSetToEntity(ResultSet rs) throws SQLException {
+        DienChinhSach dcs = new DienChinhSach();
+        dcs.setMaDCS(rs.getString("MaDCS").trim());
+        dcs.setTenDCS(rs.getString("TenDCS"));
+        dcs.setMucNienGiam(rs.getString("MucNienGiam"));
+        return dcs;
+    }
+
     @Override
     public List<DienChinhSach> findAll() {
         List<DienChinhSach> list = new ArrayList<>();
-        String sql = "SELECT * FROM DIENCHINHSACH";
+        String sql = "SELECT * FROM DienChinhSach";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-
             while (rs.next()) {
-                DienChinhSach dcs = new DienChinhSach();
-                dcs.setMaDCS(rs.getString("MADIEN").trim());
-                dcs.setTenDCS(rs.getString("TENDIEN"));
-                dcs.setMucNienGiam(rs.getString("MUCNIENGIAM"));
-                list.add(dcs);
+                list.add(mapResultSetToEntity(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -36,17 +39,13 @@ public class DienChinhSachDAOImpl implements DienChinhSachDAO {
 
     @Override
     public DienChinhSach findById(String maDien) {
-        String sql = "SELECT * FROM DIENCHINHSACH WHERE MADIEN = ?";
+        String sql = "SELECT * FROM DienChinhSach WHERE MaDCS = ?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, maDien);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    DienChinhSach dcs = new DienChinhSach();
-                    dcs.setMaDCS(rs.getString("MADIEN").trim());
-                    dcs.setTenDCS(rs.getString("TENDIEN"));
-                    dcs.setMucNienGiam(rs.getString("MUCNIENGIAM"));
-                    return dcs;
+                    return mapResultSetToEntity(rs);
                 }
             }
         } catch (SQLException e) {
@@ -57,7 +56,7 @@ public class DienChinhSachDAOImpl implements DienChinhSachDAO {
 
     @Override
     public boolean save(DienChinhSach dcs) {
-        String sql = "INSERT INTO DIENCHINHSACH(MADIEN, TENDIEN, MUCNIENGIAM) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO DienChinhSach(MaDCS, TenDCS, MucNienGiam) VALUES (?, ?, ?)";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, dcs.getMaDCS());
@@ -72,7 +71,7 @@ public class DienChinhSachDAOImpl implements DienChinhSachDAO {
 
     @Override
     public boolean update(DienChinhSach dcs) {
-        String sql = "UPDATE DIENCHINHSACH SET TENDIEN=?, MUCNIENGIAM=? WHERE MADIEN=?";
+        String sql = "UPDATE DienChinhSach SET TenDCS=?, MucNienGiam=? WHERE MaDCS=?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, dcs.getTenDCS());
@@ -87,7 +86,7 @@ public class DienChinhSachDAOImpl implements DienChinhSachDAO {
 
     @Override
     public boolean delete(String maDien) {
-        String sql = "DELETE FROM DIENCHINHSACH WHERE MADIEN=?";
+        String sql = "DELETE FROM DienChinhSach WHERE MaDCS=?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, maDien);

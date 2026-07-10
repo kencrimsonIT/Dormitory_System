@@ -34,28 +34,28 @@ public class HopDongServiceImpl implements HopDongService {
 
     @Override
     public boolean createContract(HopDong hd) {
-        // Bước 1: Lấy thông tin Phòng mà sinh viên muốn thuê
         Phong phong = phongDAO.findById(hd.getMaPhong());
         if (phong == null) {
             System.out.println("Lỗi: Phòng không tồn tại!");
             return false;
         }
-        LoaiPhong loaiPhong = loaiPhongDAO.findById(phong.getMaLoaiPhong());
-        if (loaiPhong == null) {
-            System.out.println("Lỗi: Không tìm thấy loại phòng!");
+        if (phong.getSoChoTrong() <= 0) {
+            System.out.println("Lỗi Nghiệp Vụ: Phòng " + hd.getMaPhong() + " đã hết chỗ. Không thể tạo thêm hợp đồng!");
             return false;
         }
-        int soNguoiHienTai = hopDongDAO.countTenantsByMaPhong(hd.getMaPhong());
-        if (soNguoiHienTai >= loaiPhong.getSucChua()) {
-            System.out.println("Lỗi Nghiệp Vụ: Phòng " + hd.getMaPhong() +
-                    " đã đạt tối đa sức chứa (" + loaiPhong.getSucChua() + " người). Không thể tạo thêm hợp đồng!");
-            return false;
+        if (hd.getNgayLap() == null) {
+            hd.setNgayLap(java.time.LocalDateTime.now());
         }
         boolean isSaved = hopDongDAO.save(hd);
-        if (isSaved && (soNguoiHienTai + 1 == loaiPhong.getSucChua())) {
-            phong.setTinhTrang("Đã đầy");
+        if (isSaved) {
+            int soChoMoi = phong.getSoChoTrong() - 1;
+            phong.setSoChoTrong(soChoMoi);
+
+            if (soChoMoi == 0) {
+                phong.setTrangThai("Đã đầy");
+                System.out.println("Thông báo: Phòng " + hd.getMaPhong() + " đã chuyển sang trạng thái 'Đã đầy'.");
+            }
             phongDAO.update(phong);
-            System.out.println("Thông báo: Phòng " + hd.getMaPhong() + " đã chuyển sang trạng thái 'Đã đầy'.");
         }
 
         return isSaved;

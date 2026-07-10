@@ -1,7 +1,7 @@
 package com.dormiroty.view;
 
-import com.dormiroty.controller.ViPhamController;
-import com.dormiroty.entity.ViPham;
+import com.dormiroty.controller.LS_ViPhamController; // Thay đổi Controller tương ứng
+import com.dormiroty.entity.LS_ViPham; // Sử dụng Entity Lịch sử vi phạm
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -14,13 +14,13 @@ public class ViPhamPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    private ViPhamController controller;
+    private LS_ViPhamController controller;
 
-    private JTextField txtMaNV;
-    private JTextField txtMSSV;
-    private JTextField txtTenLoaiViPham;
+    private JTextField txtMaLSViPham;
     private JTextField txtMaLoaiViPham;
+    private JTextField txtMSSV;
     private JTextField txtNgayViPham;
+    private JTextField txtMaNV;
     private JTextField txtHinhThucXuLi;
 
     private JButton btnThem;
@@ -30,40 +30,38 @@ public class ViPhamPanel extends JPanel {
     private JTable table;
     private DefaultTableModel model;
 
-    private final DateTimeFormatter formatter =
-    		 DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public ViPhamPanel() {
 
-        controller = new ViPhamController();
+        controller = new LS_ViPhamController();
+        setLayout(new GridLayout(14, 2, 5, 5));
 
-        setLayout(new GridLayout(12, 2, 5, 5));
-
-        txtMaNV = new JTextField();
-        txtMSSV = new JTextField();
-        txtTenLoaiViPham = new JTextField();
+        txtMaLSViPham = new JTextField();
         txtMaLoaiViPham = new JTextField();
+        txtMSSV = new JTextField();
         txtNgayViPham = new JTextField();
+        txtMaNV = new JTextField();
         txtHinhThucXuLi = new JTextField();
 
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
         btnXoa = new JButton("Xóa");
 
-        add(new JLabel("Mã NV"));
-        add(txtMaNV);
-
-        add(new JLabel("MSSV"));
-        add(txtMSSV);
-
-        add(new JLabel("Tên loại vi phạm"));
-        add(txtTenLoaiViPham);
+        add(new JLabel("Mã lịch sử VP"));
+        add(txtMaLSViPham);
 
         add(new JLabel("Mã loại vi phạm"));
         add(txtMaLoaiViPham);
 
-        add(new JLabel("Ngày vi phạm (yyyy-MM-dd HH:mm:ss)"));
+        add(new JLabel("MSSV"));
+        add(txtMSSV);
+
+        add(new JLabel("Ngày vi phạm (yyyy-MM-dd HH:mm)"));
         add(txtNgayViPham);
+
+        add(new JLabel("Mã NV lập biên bản"));
+        add(txtMaNV);
 
         add(new JLabel("Hình thức xử lý"));
         add(txtHinhThucXuLi);
@@ -73,13 +71,12 @@ public class ViPhamPanel extends JPanel {
 
         add(btnXoa);
         add(new JLabel());
-
         String[] columns = {
-                "Mã NV",
-                "MSSV",
-                "Tên loại VP",
+                "Mã LS VP",
                 "Mã loại VP",
-                "Ngày VP",
+                "MSSV",
+                "Ngày vi phạm",
+                "Mã NV",
                 "Hình thức xử lý"
         };
 
@@ -95,11 +92,11 @@ public class ViPhamPanel extends JPanel {
             int row = table.getSelectedRow();
 
             if (row >= 0) {
-                txtMaNV.setText(model.getValueAt(row, 0).toString());
-                txtMSSV.setText(model.getValueAt(row, 1).toString());
-                txtTenLoaiViPham.setText(model.getValueAt(row, 2).toString());
-                txtMaLoaiViPham.setText(model.getValueAt(row, 3).toString());
-                txtNgayViPham.setText(model.getValueAt(row, 4).toString());
+                txtMaLSViPham.setText(model.getValueAt(row, 0).toString());
+                txtMaLoaiViPham.setText(model.getValueAt(row, 1).toString());
+                txtMSSV.setText(model.getValueAt(row, 2).toString());
+                txtNgayViPham.setText(model.getValueAt(row, 3) != null ? model.getValueAt(row, 3).toString() : "");
+                txtMaNV.setText(model.getValueAt(row, 4).toString());
                 txtHinhThucXuLi.setText(model.getValueAt(row, 5).toString());
             }
         });
@@ -108,10 +105,10 @@ public class ViPhamPanel extends JPanel {
         btnSua.addActionListener(e -> saveData(false));
 
         btnXoa.addActionListener(e -> {
-
-            if (controller.deleteViPham(txtMaLoaiViPham.getText())) {
+            if (controller.deleteLSViPham(txtMaLSViPham.getText().trim())) {
                 JOptionPane.showMessageDialog(this, "Xóa thành công");
                 loadTable();
+                clearFields();
             }
         });
     }
@@ -119,60 +116,74 @@ public class ViPhamPanel extends JPanel {
     private void saveData(boolean isInsert) {
 
         try {
+            LS_ViPham ls = new LS_ViPham();
 
-            ViPham vp = new ViPham();
-
-            vp.setMaNV(txtMaNV.getText());
-            vp.setMSSV(Integer.parseInt(txtMSSV.getText()));
-            vp.setTenLoaiViPham(txtTenLoaiViPham.getText());
-            vp.setMaLoaiViPham(txtMaLoaiViPham.getText());
+            ls.setMaLSViPham(txtMaLSViPham.getText().trim());
+            ls.setMaLoaiViPham(txtMaLoaiViPham.getText().trim());
+            ls.setMssv(txtMSSV.getText().trim());
 
             if (!txtNgayViPham.getText().trim().isEmpty()) {
-                vp.setNgayviPham(
+                ls.setNgayViPham(
                         LocalDateTime.parse(
-                                txtNgayViPham.getText(),
+                                txtNgayViPham.getText().trim(),
                                 formatter
                         )
                 );
+            } else {
+                ls.setNgayViPham(LocalDateTime.now());
             }
 
-            vp.setHinhThucXuLi(txtHinhThucXuLi.getText());
+            ls.setMaNV(txtMaNV.getText().trim());
+            ls.setHinhThucXuLi(txtHinhThucXuLi.getText().trim());
 
             boolean result;
 
             if (isInsert) {
-                result = controller.addViPham(vp);
+                result = controller.addLSViPham(ls);
             } else {
-                result = controller.updateViPham(vp);
+                result = controller.updateLSViPham(ls);
             }
 
             if (result) {
                 JOptionPane.showMessageDialog(this,
-                        isInsert ? "Thêm thành công" : "Sửa thành công");
+                        isInsert ? "Thêm lịch sử vi phạm thành công" : "Sửa lịch sử vi phạm thành công");
                 loadTable();
+                if (isInsert) clearFields();
+            } else {
+                JOptionPane.showMessageDialog(this, "Thao tác thất bại! Kiểm tra lại mã ràng buộc.");
             }
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
-                    "Lỗi dữ liệu: " + ex.getMessage());
+                    "Lỗi định dạng dữ liệu: " + ex.getMessage());
         }
+    }
+
+    private void clearFields() {
+        txtMaLSViPham.setText("");
+        txtMaLoaiViPham.setText("");
+        txtMSSV.setText("");
+        txtNgayViPham.setText("");
+        txtMaNV.setText("");
+        txtHinhThucXuLi.setText("");
     }
 
     private void loadTable() {
 
         model.setRowCount(0);
 
-        List<ViPham> list = controller.getAllViPham();
+        List<LS_ViPham> list = controller.getAllLSViPham();
 
-        for (ViPham vp : list) {
+        for (LS_ViPham ls : list) {
+            String ngayVPStr = ls.getNgayViPham() != null ? ls.getNgayViPham().format(formatter) : "";
 
             model.addRow(new Object[]{
-                    vp.getMaNV(),
-                    vp.getMSSV(),
-                    vp.getTenLoaiViPham(),
-                    vp.getMaLoaiViPham(),
-                    vp.getNgayviPham(),
-                    vp.getHinhThucXuLi()
+                    ls.getMaLSViPham(),
+                    ls.getMaLoaiViPham(),
+                    ls.getMssv(),
+                    ngayVPStr,
+                    ls.getMaNV(),
+                    ls.getHinhThucXuLi()
             });
         }
     }

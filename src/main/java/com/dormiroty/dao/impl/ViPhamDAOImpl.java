@@ -21,25 +21,13 @@ public class ViPhamDAOImpl implements ViPhamDAO {
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-
             while (rs.next()) {
                 ViPham vp = new ViPham();
-                vp.setMaNV(rs.getString("MaNV").trim());
-                vp.setMSSV(rs.getInt("MSSV")); // Đã sửa thành getMSSV
-                vp.setTenLoaiViPham(rs.getString("TenLoaiViPham"));
                 vp.setMaLoaiViPham(rs.getString("MaLoaiViPham").trim());
-
-                Timestamp ts = rs.getTimestamp("NgayViPham");
-                if (ts != null) {
-                    vp.setNgayviPham(ts.toLocalDateTime());
-                }
-
-                vp.setHinhThucXuLi(rs.getString("HinhThucXuLi"));
+                vp.setTenLoaiViPham(rs.getString("TenLoaiViPham"));
                 list.add(vp);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        } catch (SQLException e) { e.printStackTrace(); }
         return list;
     }
 
@@ -52,18 +40,9 @@ public class ViPhamDAOImpl implements ViPhamDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     ViPham vp = new ViPham();
-                    vp.setMaNV(rs.getString("MaNV").trim());
-                    vp.setMSSV(rs.getInt("MSSV"));
-                    vp.setTenLoaiViPham(rs.getString("TenLoaiViPham"));
                     vp.setMaLoaiViPham(rs.getString("MaLoaiViPham").trim());
-
-                    Timestamp ts = rs.getTimestamp("NgayViPham");
-                    if (ts != null) {
-                        vp.setNgayviPham(ts.toLocalDateTime());
-                    }
-
-                    vp.setHinhThucXuLi(rs.getString("HinhThucXuLi"));
-                    return vp;
+                    vp.setTenLoaiViPham(rs.getString("TenLoaiViPham"));
+                    return vp; 
                 }
             }
         } catch (SQLException e) {
@@ -74,45 +53,24 @@ public class ViPhamDAOImpl implements ViPhamDAO {
 
     @Override
     public boolean save(ViPham vp) {
-        String sql = "INSERT INTO ViPham(MaNV, MSSV, TenLoaiViPham, MaLoaiViPham, NgayViPham, HinhThucXuLi) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ViPham(MaLoaiViPham, TenLoaiViPham) VALUES (?, ?)";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, vp.getMaNV());
-            ps.setInt(2, vp.getMSSV());
-            ps.setString(3, vp.getTenLoaiViPham());
-            ps.setString(4, vp.getMaLoaiViPham());
-
-            if (vp.getNgayviPham() != null) {
-                ps.setTimestamp(5, Timestamp.valueOf(vp.getNgayviPham()));
-            } else {
-                ps.setNull(5, java.sql.Types.TIMESTAMP);
-            }
-
-            ps.setString(6, vp.getHinhThucXuLi());
+            ps.setString(1, vp.getMaLoaiViPham());
+            ps.setString(2, vp.getTenLoaiViPham());
             return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        } catch (SQLException e) { e.printStackTrace(); }
         return false;
     }
 
     @Override
     public boolean update(ViPham vp) {
-        String sql = "UPDATE ViPham SET MaNV=?, MSSV=?, TenLoaiViPham=?, NgayViPham=?, HinhThucXuLi=? WHERE MaLoaiViPham=?";
+        // Chỉ cập nhật TenLoaiViPham dựa trên MaLoaiViPham
+        String sql = "UPDATE ViPham SET TenLoaiViPham=? WHERE MaLoaiViPham=?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, vp.getMaNV());
-            ps.setInt(2, vp.getMSSV());
-            ps.setString(3, vp.getTenLoaiViPham());
-
-            if (vp.getNgayviPham() != null) {
-                ps.setTimestamp(4, Timestamp.valueOf(vp.getNgayviPham()));
-            } else {
-                ps.setNull(4, java.sql.Types.TIMESTAMP);
-            }
-
-            ps.setString(5, vp.getHinhThucXuLi());
-            ps.setString(6, vp.getMaLoaiViPham());
+            ps.setString(1, vp.getTenLoaiViPham());
+            ps.setString(2, vp.getMaLoaiViPham());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

@@ -1,7 +1,5 @@
 package com.dormiroty.service;
-
 import com.dormiroty.entity.ToaNha;
-
 import java.util.List;
 
 public interface ToaNhaService {
