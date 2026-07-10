@@ -1,7 +1,8 @@
-package com.dormiroty.view;
+package com.dormiroty.view.panels;
 
 import com.dormiroty.controller.HopDongController;
 import com.dormiroty.entity.HopDong;
+import com.dormiroty.view.utils.ThemeUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -38,54 +39,36 @@ public class HopDongPanel extends JPanel {
     public HopDongPanel() {
 
         controller = new HopDongController();
-        setLayout(new GridLayout(14, 2, 5, 5));
+        setLayout(new BorderLayout(10, 10));
+        setBackground(ThemeUtils.BG_PANEL);
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        txtMaHopDong = new JTextField();
-        txtMSSV = new JTextField();
-        txtMaNV = new JTextField();
-        txtTienCoc = new JTextField();
-        txtNgayLap = new JTextField();
-        txtNgayVaoO = new JTextField();
-        txtNgayHetHan = new JTextField();
-        txtMaPhong = new JTextField();
-        txtTrangThaiHD = new JTextField();
+        JPanel formPanel = ThemeUtils.createFormPanel("Thông tin hợp đồng", 2);
 
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
+        txtMaHopDong = ThemeUtils.createTextField(15);
+        txtMSSV = ThemeUtils.createTextField(15);
+        txtMaNV = ThemeUtils.createTextField(15);
+        txtTienCoc = ThemeUtils.createTextField(15);
+        txtNgayLap = ThemeUtils.createTextField(15);
+        txtNgayVaoO = ThemeUtils.createTextField(15);
+        txtNgayHetHan = ThemeUtils.createTextField(15);
+        txtMaPhong = ThemeUtils.createTextField(15);
+        txtTrangThaiHD = ThemeUtils.createTextField(15);
 
-        add(new JLabel("Mã hợp đồng"));
-        add(txtMaHopDong);
+        btnThem = ThemeUtils.createSuccessButton("Thêm");
+        btnSua = ThemeUtils.createPrimaryButton("Sửa");
+        btnXoa = ThemeUtils.createDangerButton("Xóa");
+        JPanel btnPanel = ThemeUtils.createButtonPanel(btnThem, btnSua, btnXoa);
 
-        add(new JLabel("MSSV"));
-        add(txtMSSV);
-
-        add(new JLabel("Mã nhân viên"));
-        add(txtMaNV);
-
-        add(new JLabel("Tiền cọc"));
-        add(txtTienCoc);
-
-        add(new JLabel("Ngày lập (yyyy-MM-dd HH:mm)"));
-        add(txtNgayLap);
-
-        add(new JLabel("Ngày vào ở (yyyy-MM-dd HH:mm)"));
-        add(txtNgayVaoO);
-
-        add(new JLabel("Ngày hết hạn (yyyy-MM-dd HH:mm)"));
-        add(txtNgayHetHan);
-
-        add(new JLabel("Mã phòng"));
-        add(txtMaPhong);
-
-        add(new JLabel("Trạng thái hợp đồng"));
-        add(txtTrangThaiHD);
-
-        add(btnThem);
-        add(btnSua);
-
-        add(btnXoa);
-        add(new JLabel());
+        addFormRow(formPanel, 0, 0, "Mã hợp đồng", txtMaHopDong);
+        addFormRow(formPanel, 0, 1, "MSSV", txtMSSV);
+        addFormRow(formPanel, 1, 0, "Mã nhân viên", txtMaNV);
+        addFormRow(formPanel, 1, 1, "Tiền cọc", txtTienCoc);
+        addFormRow(formPanel, 2, 0, "Ngày lập (yyyy-MM-dd HH:mm)", txtNgayLap);
+        addFormRow(formPanel, 2, 1, "Ngày vào ở", txtNgayVaoO);
+        addFormRow(formPanel, 3, 0, "Ngày hết hạn", txtNgayHetHan);
+        addFormRow(formPanel, 3, 1, "Mã phòng", txtMaPhong);
+        addFormRow(formPanel, 4, 0, "Trạng thái HD", txtTrangThaiHD);
 
         String[] columns = {
                 "Mã HD",
@@ -102,7 +85,18 @@ public class HopDongPanel extends JPanel {
         model = new DefaultTableModel(columns, 0);
         table = new JTable(model);
 
-        add(new JScrollPane(table));
+        ThemeUtils.styleTable(table);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBorder(BorderFactory.createLineBorder(ThemeUtils.BORDER_COLOR, 1, true));
+
+        JPanel northPanel = new JPanel(new BorderLayout(10, 10));
+        northPanel.setOpaque(false);
+        northPanel.add(formPanel, BorderLayout.NORTH);
+        northPanel.add(btnPanel, BorderLayout.SOUTH);
+
+        add(northPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
 
         loadTable();
 
@@ -173,6 +167,22 @@ public class HopDongPanel extends JPanel {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Lỗi định dạng: " + ex.getMessage());
         }
+    }
+
+    private void addFormRow(JPanel panel, int row, int col, String label, JComponent field) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 6, 4, 6);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JLabel lbl = ThemeUtils.createLabel(label);
+        gbc.gridx = col * 2;
+        gbc.gridy = row;
+        gbc.weightx = 0.0;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(lbl, gbc);
+        gbc.gridx = col * 2 + 1;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel.add(field, gbc);
     }
 
     private void loadTable() {

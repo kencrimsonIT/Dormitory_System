@@ -1,7 +1,8 @@
-package com.dormiroty.view;
+package com.dormiroty.view.panels;
 
-import com.dormiroty.controller.LS_ViPhamController; // Thay đổi Controller tương ứng
-import com.dormiroty.entity.LS_ViPham; // Sử dụng Entity Lịch sử vi phạm
+import com.dormiroty.controller.LS_ViPhamController;
+import com.dormiroty.entity.LS_ViPham;
+import com.dormiroty.view.utils.ThemeUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -35,42 +36,30 @@ public class ViPhamPanel extends JPanel {
     public ViPhamPanel() {
 
         controller = new LS_ViPhamController();
-        setLayout(new GridLayout(14, 2, 5, 5));
+        setLayout(new BorderLayout(10, 10));
+        setBackground(ThemeUtils.BG_PANEL);
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        txtMaLSViPham = new JTextField();
-        txtMaLoaiViPham = new JTextField();
-        txtMSSV = new JTextField();
-        txtNgayViPham = new JTextField();
-        txtMaNV = new JTextField();
-        txtHinhThucXuLi = new JTextField();
+        JPanel formPanel = ThemeUtils.createFormPanel("Thông tin vi phạm", 2);
 
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
+        txtMaLSViPham = ThemeUtils.createTextField(15);
+        txtMaLoaiViPham = ThemeUtils.createTextField(15);
+        txtMSSV = ThemeUtils.createTextField(15);
+        txtNgayViPham = ThemeUtils.createTextField(15);
+        txtMaNV = ThemeUtils.createTextField(15);
+        txtHinhThucXuLi = ThemeUtils.createTextField(15);
 
-        add(new JLabel("Mã lịch sử VP"));
-        add(txtMaLSViPham);
+        btnThem = ThemeUtils.createSuccessButton("Thêm");
+        btnSua = ThemeUtils.createPrimaryButton("Sửa");
+        btnXoa = ThemeUtils.createDangerButton("Xóa");
+        JPanel btnPanel = ThemeUtils.createButtonPanel(btnThem, btnSua, btnXoa);
 
-        add(new JLabel("Mã loại vi phạm"));
-        add(txtMaLoaiViPham);
-
-        add(new JLabel("MSSV"));
-        add(txtMSSV);
-
-        add(new JLabel("Ngày vi phạm (yyyy-MM-dd HH:mm)"));
-        add(txtNgayViPham);
-
-        add(new JLabel("Mã NV lập biên bản"));
-        add(txtMaNV);
-
-        add(new JLabel("Hình thức xử lý"));
-        add(txtHinhThucXuLi);
-
-        add(btnThem);
-        add(btnSua);
-
-        add(btnXoa);
-        add(new JLabel());
+        addFormRow(formPanel, 0, 0, "Mã lịch sử VP", txtMaLSViPham);
+        addFormRow(formPanel, 0, 1, "Mã loại vi phạm", txtMaLoaiViPham);
+        addFormRow(formPanel, 1, 0, "MSSV", txtMSSV);
+        addFormRow(formPanel, 1, 1, "Ngày vi phạm", txtNgayViPham);
+        addFormRow(formPanel, 2, 0, "Mã NV lập BB", txtMaNV);
+        addFormRow(formPanel, 2, 1, "Hình thức xử lý", txtHinhThucXuLi);
         String[] columns = {
                 "Mã LS VP",
                 "Mã loại VP",
@@ -83,7 +72,17 @@ public class ViPhamPanel extends JPanel {
         model = new DefaultTableModel(columns, 0);
         table = new JTable(model);
 
-        add(new JScrollPane(table));
+        ThemeUtils.styleTable(table);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBorder(BorderFactory.createLineBorder(ThemeUtils.BORDER_COLOR, 1, true));
+
+        JPanel northPanel = new JPanel(new BorderLayout(10, 10));
+        northPanel.setOpaque(false);
+        northPanel.add(formPanel, BorderLayout.NORTH);
+        northPanel.add(btnPanel, BorderLayout.SOUTH);
+
+        add(northPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
 
         loadTable();
 
@@ -166,6 +165,22 @@ public class ViPhamPanel extends JPanel {
         txtNgayViPham.setText("");
         txtMaNV.setText("");
         txtHinhThucXuLi.setText("");
+    }
+
+    private void addFormRow(JPanel panel, int row, int col, String label, JComponent field) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 6, 4, 6);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JLabel lbl = ThemeUtils.createLabel(label);
+        gbc.gridx = col * 2;
+        gbc.gridy = row;
+        gbc.weightx = 0.0;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(lbl, gbc);
+        gbc.gridx = col * 2 + 1;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel.add(field, gbc);
     }
 
     private void loadTable() {

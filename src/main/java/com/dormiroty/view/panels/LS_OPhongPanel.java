@@ -1,21 +1,16 @@
-package com.dormiroty.view;
+package com.dormiroty.view.panels;
 
-import java.awt.GridLayout;
+import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import com.dormiroty.controller.LS_OPhongController;
 import com.dormiroty.entity.LS_OPhong;
+import com.dormiroty.view.utils.ThemeUtils;
 
 
 public class LS_OPhongPanel extends JPanel {
@@ -55,60 +50,38 @@ public class LS_OPhongPanel extends JPanel {
         controller = new LS_OPhongController();
 
 
-        setLayout(new GridLayout(14,2,5,5));
+        setLayout(new BorderLayout(10, 10));
+        setBackground(ThemeUtils.BG_PANEL);
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
+        JPanel formPanel = ThemeUtils.createFormPanel("Lịch sử ở phòng", 2);
 
-        txtMaLS = new JTextField();
-        txtMSSV = new JTextField();
-        txtMaPhong = new JTextField();
-        txtNgayVaoO = new JTextField();
-        txtNgayChuyenDi = new JTextField();
-        txtTrangThai = new JTextField();
-        txtTimKiem = new JTextField();
+        txtMaLS = ThemeUtils.createTextField(15);
+        txtMSSV = ThemeUtils.createTextField(15);
+        txtMaPhong = ThemeUtils.createTextField(15);
+        txtNgayVaoO = ThemeUtils.createTextField(15);
+        txtNgayChuyenDi = ThemeUtils.createTextField(15);
+        txtTrangThai = ThemeUtils.createTextField(15);
 
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
+        searchPanel.setOpaque(false);
+        JLabel lblTim = ThemeUtils.createLabel("Tìm theo MSSV:");
+        txtTimKiem = ThemeUtils.createTextField(20);
+        searchPanel.add(lblTim);
+        searchPanel.add(txtTimKiem);
 
+        btnThem = ThemeUtils.createSuccessButton("Thêm");
+        btnSua = ThemeUtils.createPrimaryButton("Sửa");
+        btnXoa = ThemeUtils.createDangerButton("Xóa");
+        btnTim = ThemeUtils.createWarningButton("Tìm");
+        JPanel btnPanel = ThemeUtils.createButtonPanel(btnThem, btnSua, btnXoa, btnTim);
 
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
-        btnTim = new JButton("Tìm");
-
-
-
-        add(new JLabel("Mã Lịch Sử"));
-        add(txtMaLS);
-
-
-        add(new JLabel("MSSV"));
-        add(txtMSSV);
-
-
-        add(new JLabel("Mã Phòng"));
-        add(txtMaPhong);
-
-
-        add(new JLabel("Ngày Vào Ở (yyyy-MM-dd HH:mm)"));
-        add(txtNgayVaoO);
-
-
-        add(new JLabel("Ngày Chuyển Đi (yyyy-MM-dd HH:mm)"));
-        add(txtNgayChuyenDi);
-
-
-        add(new JLabel("Trạng Thái Ở Phòng"));
-        add(txtTrangThai);
-
-
-        add(new JLabel("Tìm theo MSSV"));
-        add(txtTimKiem);
-
-
-
-        add(btnThem);
-        add(btnSua);
-
-        add(btnXoa);
-        add(btnTim);
+        addFormRow(formPanel, 0, 0, "Mã Lịch Sử", txtMaLS);
+        addFormRow(formPanel, 0, 1, "MSSV", txtMSSV);
+        addFormRow(formPanel, 1, 0, "Mã Phòng", txtMaPhong);
+        addFormRow(formPanel, 1, 1, "Ngày Vào Ở", txtNgayVaoO);
+        addFormRow(formPanel, 2, 0, "Ngày Chuyển Đi", txtNgayChuyenDi);
+        addFormRow(formPanel, 2, 1, "Trạng Thái", txtTrangThai);
 
 
 
@@ -176,8 +149,18 @@ public class LS_OPhongPanel extends JPanel {
 
 
 
-        add(new JScrollPane(table));
+        ThemeUtils.styleTable(table);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBorder(BorderFactory.createLineBorder(ThemeUtils.BORDER_COLOR, 1, true));
 
+        JPanel northPanel = new JPanel(new BorderLayout(10, 10));
+        northPanel.setOpaque(false);
+        northPanel.add(formPanel, BorderLayout.NORTH);
+        northPanel.add(searchPanel, BorderLayout.CENTER);
+        northPanel.add(btnPanel, BorderLayout.SOUTH);
+
+        add(northPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
 
 
 
@@ -430,13 +413,21 @@ public class LS_OPhongPanel extends JPanel {
 
         return ls;
 
+    }    private void addFormRow(JPanel panel, int row, int col, String label, JComponent field) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 6, 4, 6);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JLabel lbl = ThemeUtils.createLabel(label);
+        gbc.gridx = col * 2;
+        gbc.gridy = row;
+        gbc.weightx = 0.0;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(lbl, gbc);
+        gbc.gridx = col * 2 + 1;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel.add(field, gbc);
     }
-
-
-
-
-
-
 
     private void loadTable(){
 
@@ -454,6 +445,7 @@ public class LS_OPhongPanel extends JPanel {
 
 
             addRow(ls);
+
 
         }
 

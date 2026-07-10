@@ -1,21 +1,16 @@
-package com.dormiroty.view;
+package com.dormiroty.view.panels;
 
-import java.awt.GridLayout;
+import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import com.dormiroty.controller.SinhVienController;
 import com.dormiroty.entity.SinhVien;
+import com.dormiroty.view.utils.ThemeUtils;
 
 public class SinhVienPanel extends JPanel {
 
@@ -47,81 +42,55 @@ public class SinhVienPanel extends JPanel {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public SinhVienPanel() {
-        System.out.println("SinhVienPanel constructor");
         controller = new SinhVienController();
-        setLayout(new GridLayout(15, 2, 5, 5));
+        setLayout(new BorderLayout(10, 10));
+        setBackground(ThemeUtils.BG_PANEL);
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        txtMSSV = new JTextField();
-        txtHoTen = new JTextField();
-        txtQueQuan = new JTextField();
-        txtNgaySinh = new JTextField();
-        txtNganhHoc = new JTextField();
-        txtNam = new JTextField();
-        txtEmail = new JTextField();
-        txtSDT = new JTextField();
-        txtMaDCS = new JTextField();
-        txtTimKiem = new JTextField();
+        JPanel formPanel = ThemeUtils.createFormPanel("Thông tin sinh viên", 2);
 
-        cboGioiTinh = new JComboBox<>(new String[] { "Nam", "Nữ" });
+        txtMSSV     = ThemeUtils.createTextField(15);
+        txtHoTen    = ThemeUtils.createTextField(15);
+        txtQueQuan  = ThemeUtils.createTextField(15);
+        txtNgaySinh = ThemeUtils.createTextField(15);
+        txtNganhHoc = ThemeUtils.createTextField(15);
+        txtNam      = ThemeUtils.createTextField(15);
+        txtEmail    = ThemeUtils.createTextField(15);
+        txtSDT     = ThemeUtils.createTextField(15);
+        txtMaDCS    = ThemeUtils.createTextField(15);
 
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
-        btnTim = new JButton("Tìm");
+        cboGioiTinh = ThemeUtils.createComboBox(new String[]{"Nam", "Nữ"});
 
-        add(new JLabel("MSSV"));
-        add(txtMSSV);
+        addFormRow(formPanel, 0, 0, "MSSV", txtMSSV);
+        addFormRow(formPanel, 0, 1, "Họ tên", txtHoTen);
+        addFormRow(formPanel, 1, 0, "Giới tính", cboGioiTinh);
+        addFormRow(formPanel, 1, 1, "Ngày sinh (yyyy-MM-dd HH:mm)", txtNgaySinh);
+        addFormRow(formPanel, 2, 0, "Quê quán", txtQueQuan);
+        addFormRow(formPanel, 2, 1, "Ngành học", txtNganhHoc);
+        addFormRow(formPanel, 3, 0, "Năm thứ", txtNam);
+        addFormRow(formPanel, 3, 1, "Email", txtEmail);
+        addFormRow(formPanel, 4, 0, "SĐT", txtSDT);
+        addFormRow(formPanel, 4, 1, "Mã DCS", txtMaDCS);
 
-        add(new JLabel("Họ tên"));
-        add(txtHoTen);
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
+        searchPanel.setOpaque(false);
+        JLabel lblTim = ThemeUtils.createLabel("Tìm theo tên:");
+        txtTimKiem = ThemeUtils.createTextField(20);
+        searchPanel.add(lblTim);
+        searchPanel.add(txtTimKiem);
 
-        add(new JLabel("Giới tính"));
-        add(cboGioiTinh);
-
-        add(new JLabel("Ngày sinh (yyyy-MM-dd HH:mm)"));
-        add(txtNgaySinh);
-
-        add(new JLabel("Quê quán"));
-        add(txtQueQuan);
-
-        add(new JLabel("Ngành học"));
-        add(txtNganhHoc);
-
-        add(new JLabel("Sinh viên năm thứ"));
-        add(txtNam);
-
-        add(new JLabel("Email"));
-        add(txtEmail);
-
-        add(new JLabel("SĐT"));
-        add(txtSDT);
-
-        add(new JLabel("Mã DCS"));
-        add(txtMaDCS);
-        
-        add(new JLabel("Tìm theo tên"));
-        add(txtTimKiem);
-        
-        add(btnThem);
-        add(btnSua);
-
-        add(btnXoa);
-        add(btnTim);
+        btnThem = ThemeUtils.createSuccessButton("Thêm");
+        btnSua  = ThemeUtils.createPrimaryButton("Sửa");
+        btnXoa  = ThemeUtils.createDangerButton("Xóa");
+        btnTim  = ThemeUtils.createWarningButton("Tìm");
+        JPanel btnPanel = ThemeUtils.createButtonPanel(btnThem, btnSua, btnXoa, btnTim);
         String[] columns = {
-                "MSSV",
-                "Họ tên",
-                "Giới tính",
-                "Ngày sinh",
-                "Quê quán",
-                "Ngành học",
-                "Năm",
-                "Email",
-                "SĐT",
-                "Mã DCS"
+                "MSSV", "Họ tên", "Giới tính", "Ngày sinh",
+                "Quê quán", "Ngành học", "Năm", "Email", "SĐT", "Mã DCS"
         };
-
         model = new DefaultTableModel(columns, 0);
         table = new JTable(model);
+        ThemeUtils.styleTable(table);
 
         table.getSelectionModel().addListSelectionListener(e -> {
             int row = table.getSelectedRow();
@@ -143,7 +112,16 @@ public class SinhVienPanel extends JPanel {
         });
 
         JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane);
+        scrollPane.setBorder(BorderFactory.createLineBorder(ThemeUtils.BORDER_COLOR, 1, true));
+
+        JPanel northPanel = new JPanel(new BorderLayout(10, 10));
+        northPanel.setOpaque(false);
+        northPanel.add(formPanel, BorderLayout.NORTH);
+        northPanel.add(searchPanel, BorderLayout.CENTER);
+        northPanel.add(btnPanel, BorderLayout.SOUTH);
+
+        add(northPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
 
         btnThem.addActionListener(e -> {
             try {
@@ -166,16 +144,15 @@ public class SinhVienPanel extends JPanel {
                 boolean result = controller.addSinhVien(sv);
 
                 if (result) {
-                    javax.swing.JOptionPane.showMessageDialog(this, "Thêm thành công!");
+                    JOptionPane.showMessageDialog(this, "Thêm thành công!");
                     loadTable();
                     clearFields();
                 } else {
-                    javax.swing.JOptionPane.showMessageDialog(this, "Thêm thất bại! Kiểm tra Console.");
+                    JOptionPane.showMessageDialog(this, "Thêm thất bại! Kiểm tra Console.");
                 }
-
             } catch (Exception ex) {
                 ex.printStackTrace();
-                javax.swing.JOptionPane.showMessageDialog(this, "Lỗi dữ liệu: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "Lỗi dữ liệu: " + ex.getMessage());
             }
         });
         btnSua.addActionListener(e -> {
@@ -198,16 +175,15 @@ public class SinhVienPanel extends JPanel {
                 sv.setMaDCS(txtMaDCS.getText().trim());
 
                 if (controller.updateSinhVien(sv)) {
-                    javax.swing.JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
+                    JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
                     loadTable();
                     clearFields();
                 } else {
-                    javax.swing.JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
+                    JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
                 }
-
             } catch (Exception ex) {
                 ex.printStackTrace();
-                javax.swing.JOptionPane.showMessageDialog(this, ex.getMessage());
+                JOptionPane.showMessageDialog(this, ex.getMessage());
             }
         });
 
@@ -216,26 +192,19 @@ public class SinhVienPanel extends JPanel {
             String mssv = txtMSSV.getText().trim();
 
             if (mssv.isEmpty()) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Chọn sinh viên cần xóa!");
+                JOptionPane.showMessageDialog(this, "Chọn sinh viên cần xóa!");
                 return;
             }
 
-            int confirm = javax.swing.JOptionPane.showConfirmDialog(
-                    this,
-                    "Bạn có chắc muốn xóa?",
-                    "Xác nhận",
-                    javax.swing.JOptionPane.YES_NO_OPTION);
-
-            if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-
+            int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
                 if (controller.deleteSinhVien(mssv)) {
-                    javax.swing.JOptionPane.showMessageDialog(this, "Xóa thành công!");
+                    JOptionPane.showMessageDialog(this, "Xóa thành công!");
                     loadTable();
                     clearFields();
                 } else {
-                    javax.swing.JOptionPane.showMessageDialog(this, "Xóa thất bại!");
+                    JOptionPane.showMessageDialog(this, "Xóa thất bại!");
                 }
-
             }
 
         });
@@ -286,28 +255,31 @@ public class SinhVienPanel extends JPanel {
         txtMaDCS.setText("");
     }
 
+    private void addFormRow(JPanel panel, int row, int col, String label, JComponent field) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 6, 4, 6);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JLabel lbl = ThemeUtils.createLabel(label);
+        gbc.gridx = col * 2;
+        gbc.gridy = row;
+        gbc.weightx = 0.0;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(lbl, gbc);
+        gbc.gridx = col * 2 + 1;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel.add(field, gbc);
+    }
+
     private void loadTable() {
-        System.out.println("loadTable duoc goi");
         model.setRowCount(0);
-
         List<SinhVien> list = controller.getAllSinhVien();
-
-        System.out.println("So sinh vien = " + list.size());
-
         for (SinhVien sv : list) {
             String ngaySinhStr = sv.getNgaySinh() != null ? sv.getNgaySinh().format(formatter) : "";
-
-            model.addRow(new Object[] {
-                    sv.getMssv(),
-                    sv.getHoTen(),
-                    sv.getGioiTinh(),
-                    ngaySinhStr,
-                    sv.getQueQuan(),
-                    sv.getNganhHoc(),
-                    sv.getNam(),
-                    sv.getEmail(),
-                    sv.getSdt(),
-                    sv.getMaDCS()
+            model.addRow(new Object[]{
+                    sv.getMssv(), sv.getHoTen(), sv.getGioiTinh(), ngaySinhStr,
+                    sv.getQueQuan(), sv.getNganhHoc(), sv.getNam(),
+                    sv.getEmail(), sv.getSdt(), sv.getMaDCS()
             });
         }
     }
