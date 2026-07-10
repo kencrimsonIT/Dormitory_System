@@ -98,7 +98,10 @@ public class SinhVienPanel extends JPanel {
 
         add(new JLabel("Mã DCS"));
         add(txtMaDCS);
-
+        
+        add(new JLabel("Tìm theo tên"));
+        add(txtTimKiem);
+        
         add(btnThem);
         add(btnSua);
 
@@ -175,7 +178,100 @@ public class SinhVienPanel extends JPanel {
                 javax.swing.JOptionPane.showMessageDialog(this, "Lỗi dữ liệu: " + ex.getMessage());
             }
         });
+        btnSua.addActionListener(e -> {
+            try {
+                SinhVien sv = new SinhVien();
+
+                sv.setMssv(txtMSSV.getText().trim());
+                sv.setHoTen(txtHoTen.getText().trim());
+                sv.setGioiTinh(cboGioiTinh.getSelectedItem().toString());
+
+                if (!txtNgaySinh.getText().trim().isEmpty()) {
+                    sv.setNgaySinh(LocalDateTime.parse(txtNgaySinh.getText().trim(), formatter));
+                }
+
+                sv.setQueQuan(txtQueQuan.getText().trim());
+                sv.setNganhHoc(txtNganhHoc.getText().trim());
+                sv.setNam(Integer.parseInt(txtNam.getText().trim()));
+                sv.setEmail(txtEmail.getText().trim());
+                sv.setSdt(txtSDT.getText().trim());
+                sv.setMaDCS(txtMaDCS.getText().trim());
+
+                if (controller.updateSinhVien(sv)) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
+                    loadTable();
+                    clearFields();
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                javax.swing.JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+        });
+
+        btnXoa.addActionListener(e -> {
+
+            String mssv = txtMSSV.getText().trim();
+
+            if (mssv.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Chọn sinh viên cần xóa!");
+                return;
+            }
+
+            int confirm = javax.swing.JOptionPane.showConfirmDialog(
+                    this,
+                    "Bạn có chắc muốn xóa?",
+                    "Xác nhận",
+                    javax.swing.JOptionPane.YES_NO_OPTION);
+
+            if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+
+                if (controller.deleteSinhVien(mssv)) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Xóa thành công!");
+                    loadTable();
+                    clearFields();
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Xóa thất bại!");
+                }
+
+            }
+
+        });
+
+        btnTim.addActionListener(e -> {
+
+            model.setRowCount(0);
+
+            List<SinhVien> list = controller.findByName(txtTimKiem.getText().trim());
+
+            for (SinhVien sv : list) {
+
+                String ngaySinh = "";
+
+                if (sv.getNgaySinh() != null) {
+                    ngaySinh = sv.getNgaySinh().format(formatter);
+                }
+
+                model.addRow(new Object[]{
+                        sv.getMssv(),
+                        sv.getHoTen(),
+                        sv.getGioiTinh(),
+                        ngaySinh,
+                        sv.getQueQuan(),
+                        sv.getNganhHoc(),
+                        sv.getNam(),
+                        sv.getEmail(),
+                        sv.getSdt(),
+                        sv.getMaDCS()
+                });
+            }
+
+        });
+
         loadTable();
+     
     }
 
     private void clearFields() {
