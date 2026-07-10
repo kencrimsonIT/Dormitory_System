@@ -1,7 +1,5 @@
 package com.dormiroty.service;
-
 import com.dormiroty.entity.DienChinhSach;
-
 import java.util.List;
 
 public interface DienChinhSachService {

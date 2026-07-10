@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -23,7 +24,8 @@ public class PhongPanel extends JPanel {
     private JTextField txtMaPhong;
     private JTextField txtMaLoaiPhong;
     private JTextField txtMaToaNha;
-    private JTextField txtTinhTrang;
+    private JTextField txtSoChoTrong;
+    private JTextField txtTrangThai;
 
     private JButton btnThem;
     private JButton btnSua;
@@ -35,13 +37,13 @@ public class PhongPanel extends JPanel {
     public PhongPanel() {
 
         controller = new PhongController();
-
-        setLayout(new GridLayout(8, 2, 5, 5));
+        setLayout(new GridLayout(10, 2, 5, 5));
 
         txtMaPhong = new JTextField();
         txtMaLoaiPhong = new JTextField();
         txtMaToaNha = new JTextField();
-        txtTinhTrang = new JTextField();
+        txtSoChoTrong = new JTextField();
+        txtTrangThai = new JTextField();
 
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
@@ -56,8 +58,11 @@ public class PhongPanel extends JPanel {
         add(new JLabel("Mã tòa nhà"));
         add(txtMaToaNha);
 
-        add(new JLabel("Tình trạng"));
-        add(txtTinhTrang);
+        add(new JLabel("Số chỗ trống"));
+        add(txtSoChoTrong);
+
+        add(new JLabel("Trạng thái"));
+        add(txtTrangThai);
 
         add(btnThem);
         add(btnSua);
@@ -69,7 +74,8 @@ public class PhongPanel extends JPanel {
                 "Mã phòng",
                 "Mã loại phòng",
                 "Mã tòa nhà",
-                "Tình trạng"
+                "Số chỗ trống",
+                "Trạng thái"
         };
 
         model = new DefaultTableModel(columns, 0);
@@ -79,89 +85,89 @@ public class PhongPanel extends JPanel {
         add(scrollPane);
 
         loadTable();
+
         table.getSelectionModel().addListSelectionListener(e -> {
-        	int row = table.getSelectedRow();
-        	if (row >= 0) {
-        	    txtMaPhong.setText(model.getValueAt(row, 0).toString());
-        	    txtMaLoaiPhong.setText(model.getValueAt(row, 1).toString());
-        	    txtMaToaNha.setText(model.getValueAt(row, 2).toString());
-        	    txtTinhTrang.setText(model.getValueAt(row, 3).toString());
-        	}
-  
+            int row = table.getSelectedRow();
+            if (row >= 0) {
+                txtMaPhong.setText(model.getValueAt(row, 0).toString());
+                txtMaLoaiPhong.setText(model.getValueAt(row, 1).toString());
+                txtMaToaNha.setText(model.getValueAt(row, 2).toString());
+                txtSoChoTrong.setText(model.getValueAt(row, 3).toString());
+                txtTrangThai.setText(model.getValueAt(row, 4).toString());
+            }
+        });
 
-        	});
+        btnThem.addActionListener(e -> {
+            try {
+                Phong p = new Phong();
+                p.setMaPhong(txtMaPhong.getText());
+                p.setMaLoaiPhong(txtMaLoaiPhong.getText());
+                p.setMaToaNha(txtMaToaNha.getText());
+                p.setSoChoTrong(Integer.parseInt(txtSoChoTrong.getText())); // THÊM MỚI (Ép kiểu sang int)
+                p.setTrangThai(txtTrangThai.getText());
 
-        	btnThem.addActionListener(e -> {
+                if (controller.addPhong(p)) {
+                    JOptionPane.showMessageDialog(this, "Thêm thành công");
+                    loadTable();
+                    clearFields();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thêm thất bại!");
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Số chỗ trống phải là một số nguyên hợp lệ!");
+            }
+        });
 
-   
-        	Phong p = new Phong();
+        btnSua.addActionListener(e -> {
+            try {
+                Phong p = new Phong();
+                p.setMaPhong(txtMaPhong.getText());
+                p.setMaLoaiPhong(txtMaLoaiPhong.getText());
+                p.setMaToaNha(txtMaToaNha.getText());
+                p.setSoChoTrong(Integer.parseInt(txtSoChoTrong.getText()));
+                p.setTrangThai(txtTrangThai.getText());
 
-        	p.setMaPhong(txtMaPhong.getText());
-        	p.setMaLoaiPhong(txtMaLoaiPhong.getText());
-        	p.setMaToaNha(txtMaToaNha.getText());
-        	p.setTinhTrang(txtTinhTrang.getText());
+                if (controller.updatePhong(p)) {
+                    JOptionPane.showMessageDialog(this, "Sửa thành công");
+                    loadTable();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Sửa thất bại!");
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Số chỗ trống phải là một số nguyên hợp lệ!");
+            }
+        });
 
-        	if (controller.addPhong(p)) {
-
-        	    loadTable();
-
-        	    txtMaPhong.setText("");
-        	    txtMaLoaiPhong.setText("");
-        	    txtMaToaNha.setText("");
-        	    txtTinhTrang.setText("");
-        	}
-   
-        	});
-
-        	btnSua.addActionListener(e -> {
-        		System.out.println("Da bam nut Sua");
-        	Phong p = new Phong();
-
-        	p.setMaPhong(txtMaPhong.getText());
-        	p.setMaLoaiPhong(txtMaLoaiPhong.getText());
-        	p.setMaToaNha(txtMaToaNha.getText());
-        	p.setTinhTrang(txtTinhTrang.getText());
-        	boolean result = controller.updatePhong(p);
-        	System.out.println("Ket qua update = " + result);
-        	if (result) {
-        	    loadTable();
-        	}
-    
-
-        	});
-
-        	btnXoa.addActionListener(e -> {
-
-   
-        	String maPhong = txtMaPhong.getText();
-
-        	if (controller.deletePhong(maPhong)) {
-
-        	    loadTable();
-
-        	    txtMaPhong.setText("");
-        	    txtMaLoaiPhong.setText("");
-        	    txtMaToaNha.setText("");
-        	    txtTinhTrang.setText("");
-        	}
-
-        	});
-
+        btnXoa.addActionListener(e -> {
+            String maPhong = txtMaPhong.getText();
+            if (controller.deletePhong(maPhong)) {
+                JOptionPane.showMessageDialog(this, "Xóa thành công");
+                loadTable();
+                clearFields();
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa thất bại!");
+            }
+        });
+    }
+    private void clearFields() {
+        txtMaPhong.setText("");
+        txtMaLoaiPhong.setText("");
+        txtMaToaNha.setText("");
+        txtSoChoTrong.setText("");
+        txtTrangThai.setText("");
     }
 
     private void loadTable() {
-
         model.setRowCount(0);
-
         List<Phong> list = controller.getAllPhong();
 
         for (Phong p : list) {
-
             model.addRow(new Object[] {
                     p.getMaPhong(),
                     p.getMaLoaiPhong(),
                     p.getMaToaNha(),
-                    p.getTinhTrang()
+                    p.getSoChoTrong(),
+                    p.getTrangThai()
             });
         }
     }

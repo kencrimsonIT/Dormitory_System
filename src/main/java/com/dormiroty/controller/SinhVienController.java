@@ -17,7 +17,7 @@ public class SinhVienController {
         return service.getAll();
     }
 
-    public SinhVien getSinhVienById(int mssv) {
+    public SinhVien getSinhVienById(String mssv) {
         return service.getById(mssv);
     }
 
@@ -29,7 +29,7 @@ public class SinhVienController {
         return service.update(sv);
     }
 
-    public boolean deleteSinhVien(int mssv) {
+    public boolean deleteSinhVien(String mssv) {
         return service.delete(mssv);
     }
 

@@ -11,25 +11,22 @@ public class PhongServiceImpl implements PhongService {
     private PhongDAO phongDAO = new PhongDAOImpl();
 
     @Override
-    public List<Phong> getAll() {
-        return phongDAO.findAll();
-    }
+    public List<Phong> getAll() { return phongDAO.findAll(); }
 
     @Override
-    public Phong getById(String maPhong) {
-        return phongDAO.findById(maPhong);
-    }
+    public Phong getById(String maPhong) { return phongDAO.findById(maPhong); }
 
     @Override
-    public List<Phong> getAvailableRooms() {
-        return phongDAO.findAvailableRooms();
-    }
+    public List<Phong> getAvailableRooms() { return phongDAO.findAvailableRooms(); }
 
     @Override
     public boolean create(Phong phong) {
-        // Kiểm tra xem mã phòng đã tồn tại chưa trước khi thêm
         if (phongDAO.findById(phong.getMaPhong()) != null) {
             System.out.println("Lỗi: Mã phòng đã tồn tại!");
+            return false;
+        }
+        if (phong.getSoChoTrong() < 0) {
+            System.out.println("Lỗi: Số chỗ trống không được bé hơn 0!");
             return false;
         }
         return phongDAO.save(phong);
@@ -37,15 +34,16 @@ public class PhongServiceImpl implements PhongService {
 
     @Override
     public boolean update(Phong phong) {
+        if (phong.getSoChoTrong() < 0) {
+            System.out.println("Lỗi: Số chỗ trống không được bé hơn 0!");
+            return false;
+        }
         return phongDAO.update(phong);
     }
 
     @Override
-    public boolean delete(String maPhong) {
-        return phongDAO.delete(maPhong);
-    }
+    public boolean delete(String maPhong) { return phongDAO.delete(maPhong); }
+
     @Override
-    public List<Phong> findByToaNha(String maToaNha) {
-        return phongDAO.findByToaNha(maToaNha);
-    }
+    public List<Phong> findByToaNha(String maToaNha) { return phongDAO.findByToaNha(maToaNha); }
 }

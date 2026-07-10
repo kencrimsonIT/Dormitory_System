@@ -1,40 +1,26 @@
 package com.dormiroty.entity;
 
 public class ToaNha {
-    private String MaToaNha;
-    private String TenToaNha;
-    private String LoaiToaNha;
+    private String maToaNha;
+    private String tenToaNha;
+    private String loaiToaNha;
+    private int soTang;
+    private String diaChi;
 
-    public ToaNha() {
-    }
+    public ToaNha() {}
 
-    public ToaNha(String maToaNha, String tenToaNha, String loaiToaNha) {
-        MaToaNha = maToaNha;
-        TenToaNha = tenToaNha;
-        LoaiToaNha = loaiToaNha;
-    }
+    public String getMaToaNha() { return maToaNha; }
+    public void setMaToaNha(String maToaNha) { this.maToaNha = maToaNha; }
 
-    public String getMaToaNha() {
-        return MaToaNha;
-    }
+    public String getTenToaNha() { return tenToaNha; }
+    public void setTenToaNha(String tenToaNha) { this.tenToaNha = tenToaNha; }
 
-    public void setMaToaNha(String maToaNha) {
-        MaToaNha = maToaNha;
-    }
+    public String getLoaiToaNha() { return loaiToaNha; }
+    public void setLoaiToaNha(String loaiToaNha) { this.loaiToaNha = loaiToaNha; }
 
-    public String getTenToaNha() {
-        return TenToaNha;
-    }
+    public int getSoTang() { return soTang; }
+    public void setSoTang(int soTang) { this.soTang = soTang; }
 
-    public void setTenToaNha(String tenToaNha) {
-        TenToaNha = tenToaNha;
-    }
-
-    public String getLoaiToaNha() {
-        return LoaiToaNha;
-    }
-
-    public void setLoaiToaNha(String loaiToaNha) {
-        LoaiToaNha = loaiToaNha;
-    }
+    public String getDiaChi() { return diaChi; }
+    public void setDiaChi(String diaChi) { this.diaChi = diaChi; }
 }

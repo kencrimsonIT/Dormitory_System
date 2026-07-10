@@ -1,6 +1,8 @@
 package com.dormiroty.view;
 
 import java.awt.GridLayout;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -23,8 +25,10 @@ public class SinhVienPanel extends JPanel {
 
     private JTextField txtMSSV;
     private JTextField txtHoTen;
+    private JTextField txtQueQuan;
     private JTextField txtNgaySinh;
     private JTextField txtNganhHoc;
+    private JTextField txtNam;
     private JTextField txtEmail;
     private JTextField txtSDT;
     private JTextField txtMaDCS;
@@ -40,16 +44,19 @@ public class SinhVienPanel extends JPanel {
     private JTable table;
     private DefaultTableModel model;
 
-    public SinhVienPanel() {
-    	System.out.println("SinhVienPanel constructor");
-        controller = new SinhVienController();
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        setLayout(new GridLayout(11, 2, 5, 5));
+    public SinhVienPanel() {
+        System.out.println("SinhVienPanel constructor");
+        controller = new SinhVienController();
+        setLayout(new GridLayout(15, 2, 5, 5));
 
         txtMSSV = new JTextField();
         txtHoTen = new JTextField();
+        txtQueQuan = new JTextField();
         txtNgaySinh = new JTextField();
         txtNganhHoc = new JTextField();
+        txtNam = new JTextField();
         txtEmail = new JTextField();
         txtSDT = new JTextField();
         txtMaDCS = new JTextField();
@@ -71,11 +78,17 @@ public class SinhVienPanel extends JPanel {
         add(new JLabel("Giới tính"));
         add(cboGioiTinh);
 
-        add(new JLabel("Ngày sinh"));
+        add(new JLabel("Ngày sinh (yyyy-MM-dd HH:mm)"));
         add(txtNgaySinh);
+
+        add(new JLabel("Quê quán"));
+        add(txtQueQuan);
 
         add(new JLabel("Ngành học"));
         add(txtNganhHoc);
+
+        add(new JLabel("Sinh viên năm thứ"));
+        add(txtNam);
 
         add(new JLabel("Email"));
         add(txtEmail);
@@ -91,13 +104,14 @@ public class SinhVienPanel extends JPanel {
 
         add(btnXoa);
         add(btnTim);
-
         String[] columns = {
                 "MSSV",
                 "Họ tên",
                 "Giới tính",
                 "Ngày sinh",
+                "Quê quán",
                 "Ngành học",
+                "Năm",
                 "Email",
                 "SĐT",
                 "Mã DCS"
@@ -114,83 +128,70 @@ public class SinhVienPanel extends JPanel {
                 txtHoTen.setText(model.getValueAt(row, 1).toString());
                 cboGioiTinh.setSelectedItem(model.getValueAt(row, 2).toString());
                 txtNgaySinh.setText(model.getValueAt(row, 3).toString());
-                txtNganhHoc.setText(model.getValueAt(row, 4).toString());
-                txtEmail.setText(model.getValueAt(row, 5).toString());
-                txtSDT.setText(model.getValueAt(row, 6).toString());
+                txtQueQuan.setText(model.getValueAt(row, 4).toString());
+                txtNganhHoc.setText(model.getValueAt(row, 5).toString());
+                txtNam.setText(model.getValueAt(row, 6).toString());
+                txtEmail.setText(model.getValueAt(row, 7).toString());
+                txtSDT.setText(model.getValueAt(row, 8).toString());
 
-                Object maDCS = model.getValueAt(row, 7);
+                Object maDCS = model.getValueAt(row, 9);
                 txtMaDCS.setText(maDCS == null ? "" : maDCS.toString());
             }
         });
 
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane);
+
         btnThem.addActionListener(e -> {
             try {
                 SinhVien sv = new SinhVien();
-
-                sv.setMSSV(Integer.parseInt(txtMSSV.getText().trim()));
+                sv.setMssv(txtMSSV.getText().trim());
                 sv.setHoTen(txtHoTen.getText().trim());
                 sv.setGioiTinh(cboGioiTinh.getSelectedItem().toString());
 
-                sv.setNgaySinh(
-                        java.time.LocalDateTime.parse(txtNgaySinh.getText().trim())
-                );
+                if (!txtNgaySinh.getText().trim().isEmpty()) {
+                    sv.setNgaySinh(LocalDateTime.parse(txtNgaySinh.getText().trim(), formatter));
+                }
 
+                sv.setQueQuan(txtQueQuan.getText().trim());
                 sv.setNganhHoc(txtNganhHoc.getText().trim());
+                sv.setNam(Integer.parseInt(txtNam.getText().trim()));
                 sv.setEmail(txtEmail.getText().trim());
-                sv.setSDT(txtSDT.getText().trim());
-                sv.setMaDCS(txtMaDCS.getText().trim());
-
-                System.out.println("========== DU LIEU THEM ==========");
-                System.out.println("MSSV = " + sv.getMSSV());
-                System.out.println("HoTen = " + sv.getHoTen());
-                System.out.println("GioiTinh = " + sv.getGioiTinh());
-                System.out.println("NgaySinh = " + sv.getNgaySinh());
-                System.out.println("NganhHoc = " + sv.getNganhHoc());
-                System.out.println("Email = " + sv.getEmail());
-                System.out.println("SDT = " + sv.getSDT());
-                System.out.println("MaDCS = [" + sv.getMaDCS() + "]");
-                System.out.println("=================================");
+                sv.setSdt(txtSDT.getText().trim());
+                sv.setMaDCS(txtMaDCS.getText().trim().isEmpty() ? null : txtMaDCS.getText().trim());
 
                 boolean result = controller.addSinhVien(sv);
 
                 if (result) {
-                    javax.swing.JOptionPane.showMessageDialog(
-                            this,
-                            "Thêm thành công!"
-                    );
-
+                    javax.swing.JOptionPane.showMessageDialog(this, "Thêm thành công!");
                     loadTable();
-
-                    txtMSSV.setText("");
-                    txtHoTen.setText("");
-                    txtNgaySinh.setText("");
-                    txtNganhHoc.setText("");
-                    txtEmail.setText("");
-                    txtSDT.setText("");
-                    txtMaDCS.setText("");
-
+                    clearFields();
                 } else {
-                    javax.swing.JOptionPane.showMessageDialog(
-                            this,
-                            "Thêm thất bại! Kiểm tra Console."
-                    );
+                    javax.swing.JOptionPane.showMessageDialog(this, "Thêm thất bại! Kiểm tra Console.");
                 }
 
             } catch (Exception ex) {
                 ex.printStackTrace();
-
-                javax.swing.JOptionPane.showMessageDialog(
-                        this,
-                        "Lỗi dữ liệu: " + ex.getMessage()
-                );
+                javax.swing.JOptionPane.showMessageDialog(this, "Lỗi dữ liệu: " + ex.getMessage());
             }
         });
         loadTable();
     }
+
+    private void clearFields() {
+        txtMSSV.setText("");
+        txtHoTen.setText("");
+        txtNgaySinh.setText("");
+        txtQueQuan.setText("");
+        txtNganhHoc.setText("");
+        txtNam.setText("");
+        txtEmail.setText("");
+        txtSDT.setText("");
+        txtMaDCS.setText("");
+    }
+
     private void loadTable() {
-    	 System.out.println("loadTable duoc goi");
+        System.out.println("loadTable duoc goi");
         model.setRowCount(0);
 
         List<SinhVien> list = controller.getAllSinhVien();
@@ -198,20 +199,20 @@ public class SinhVienPanel extends JPanel {
         System.out.println("So sinh vien = " + list.size());
 
         for (SinhVien sv : list) {
-
-            System.out.println(sv.getHoTen());
+            String ngaySinhStr = sv.getNgaySinh() != null ? sv.getNgaySinh().format(formatter) : "";
 
             model.addRow(new Object[] {
-                    sv.getMSSV(),
+                    sv.getMssv(),
                     sv.getHoTen(),
                     sv.getGioiTinh(),
-                    sv.getNgaySinh(),
+                    ngaySinhStr,
+                    sv.getQueQuan(),
                     sv.getNganhHoc(),
+                    sv.getNam(),
                     sv.getEmail(),
-                    sv.getSDT(),
+                    sv.getSdt(),
                     sv.getMaDCS()
             });
         }
     }
-    
 }

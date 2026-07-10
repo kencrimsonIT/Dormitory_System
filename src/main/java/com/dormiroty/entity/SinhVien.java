@@ -3,85 +3,47 @@ package com.dormiroty.entity;
 import java.time.LocalDateTime;
 
 public class SinhVien {
-    private int MSSV;
-    private String HoTen;
-    private String GioiTinh;
-    private LocalDateTime NgaySinh;
-    private String NganhHoc;
-    private String Email;
-    private String SDT;
-    private String MaDCS;
+    private String mssv;
+    private String hoTen;
+    private LocalDateTime ngaySinh;
+    private String queQuan;
+    private String gioiTinh;
+    private String email;
+    private String sdt;
+    private String nganhHoc;
+    private int nam;
+    private String maDCS;
 
-    public SinhVien() {
-    }
+    public SinhVien() {}
 
-    public SinhVien(int MSSV, String hoTen, String gioiTinh, LocalDateTime ngaySinh, String nganhHoc, String email, String SDT, String maDCS) {
-        this.MSSV = MSSV;
-        HoTen = hoTen;
-        GioiTinh = gioiTinh;
-        NgaySinh = ngaySinh;
-        NganhHoc = nganhHoc;
-        Email = email;
-        this.SDT = SDT;
-        MaDCS = maDCS;
-    }
+    // Getters and Setters
+    public String getMssv() { return mssv; }
+    public void setMssv(String mssv) { this.mssv = mssv; }
 
-    public int getMSSV() {
-        return MSSV;
-    }
+    public String getHoTen() { return hoTen; }
+    public void setHoTen(String hoTen) { this.hoTen = hoTen; }
 
-    public void setMSSV(int MSSV) {
-        this.MSSV = MSSV;
-    }
+    public LocalDateTime getNgaySinh() { return ngaySinh; }
+    public void setNgaySinh(LocalDateTime ngaySinh) { this.ngaySinh = ngaySinh; }
 
-    public String getHoTen() {
-        return HoTen;
-    }
+    public String getQueQuan() { return queQuan; }
+    public void setQueQuan(String queQuan) { this.queQuan = queQuan; }
 
-    public void setHoTen(String hoTen) {
-        HoTen = hoTen;
-    }
+    public String getGioiTinh() { return gioiTinh; }
+    public void setGioiTinh(String gioiTinh) { this.gioiTinh = gioiTinh; }
 
-    public String getGioiTinh() {
-        return GioiTinh;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setGioiTinh(String gioiTinh) {
-        GioiTinh = gioiTinh;
-    }
+    public String getSdt() { return sdt; }
+    public void setSdt(String sdt) { this.sdt = sdt; }
 
-    public LocalDateTime getNgaySinh() {
-        return NgaySinh;
-    }
+    public String getNganhHoc() { return nganhHoc; }
+    public void setNganhHoc(String nganhHoc) { this.nganhHoc = nganhHoc; }
 
-    public void setNgaySinh(LocalDateTime ngaySinh) {
-        NgaySinh = ngaySinh;
-    }
+    public int getNam() { return nam; }
+    public void setNam(int nam) { this.nam = nam; }
 
-    public String getNganhHoc() {
-        return NganhHoc;
-    }
-
-    public void setNganhHoc(String nganhHoc) {
-        NganhHoc = nganhHoc;
-    }
-
-    public String getEmail() {
-        return Email;
-    }
-
-    public void setEmail(String email) {
-        Email = email;
-    }
-
-    public String getSDT() {
-        return SDT;
-    }
-
-    public void setSDT(String SDT) {
-        this.SDT = SDT;
-    }
-
-    public String getMaDCS() { return MaDCS; }
-    public void setMaDCS(String maDCS) { MaDCS = maDCS; }
+    public String getMaDCS() { return maDCS; }
+    public void setMaDCS(String maDCS) { this.maDCS = maDCS; }
 }

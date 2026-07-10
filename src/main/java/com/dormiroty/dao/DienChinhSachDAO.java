@@ -1,7 +1,6 @@
 package com.dormiroty.dao;
 
 import com.dormiroty.entity.DienChinhSach;
-
 import java.util.List;
 
 public interface DienChinhSachDAO {

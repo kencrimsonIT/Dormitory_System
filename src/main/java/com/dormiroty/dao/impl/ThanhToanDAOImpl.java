@@ -1,31 +1,34 @@
 package com.dormiroty.dao.impl;
 
-import com.dormiroty.dao.LoaiPhongDAO;
+import com.dormiroty.dao.ThanhToanDAO;
 import com.dormiroty.database.DBConnect;
-import com.dormiroty.entity.LoaiPhong;
+import com.dormiroty.entity.ThanhToan;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoaiPhongDAOImpl implements LoaiPhongDAO {
+public class ThanhToanDAOImpl implements ThanhToanDAO {
 
-    private LoaiPhong mapResultSetToEntity(ResultSet rs) throws SQLException {
-        LoaiPhong lp = new LoaiPhong();
-        lp.setMaLoaiPhong(rs.getString("MaLoaiPhong").trim());
-        lp.setTenLoaiPhong(rs.getString("TenLoaiPhong"));
-        lp.setSucChua(rs.getShort("SucChua"));
-        lp.setDonGia(rs.getBigDecimal("DonGia"));
-        return lp;
+    private ThanhToan mapResultSetToEntity(ResultSet rs) throws SQLException {
+        ThanhToan tt = new ThanhToan();
+        tt.setMaHD(rs.getString("MaHD").trim());
+
+        Timestamp ts = rs.getTimestamp("NgayThanhToan");
+        if (ts != null) {
+            tt.setNgayThanhToan(ts.toLocalDateTime());
+        }
+        return tt;
     }
 
     @Override
-    public List<LoaiPhong> findAll() {
-        List<LoaiPhong> list = new ArrayList<>();
-        String sql = "SELECT * FROM LoaiPhong";
+    public List<ThanhToan> findAll() {
+        List<ThanhToan> list = new ArrayList<>();
+        String sql = "SELECT * FROM ThanhToan";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -39,11 +42,11 @@ public class LoaiPhongDAOImpl implements LoaiPhongDAO {
     }
 
     @Override
-    public LoaiPhong findById(String maLoaiPhong) {
-        String sql = "SELECT * FROM LoaiPhong WHERE MaLoaiPhong = ?";
+    public ThanhToan findById(String maHD) {
+        String sql = "SELECT * FROM ThanhToan WHERE MaHD = ?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, maLoaiPhong);
+            ps.setString(1, maHD);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return mapResultSetToEntity(rs);
@@ -56,14 +59,12 @@ public class LoaiPhongDAOImpl implements LoaiPhongDAO {
     }
 
     @Override
-    public boolean save(LoaiPhong lp) {
-        String sql = "INSERT INTO LoaiPhong(MaLoaiPhong, TenLoaiPhong, SucChua, DonGia) VALUES (?, ?, ?, ?)";
+    public boolean save(ThanhToan tt) {
+        String sql = "INSERT INTO ThanhToan(MaHD, NgayThanhToan) VALUES (?, ?)";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, lp.getMaLoaiPhong());
-            ps.setString(2, lp.getTenLoaiPhong());
-            ps.setShort(3, lp.getSucChua());
-            ps.setBigDecimal(4, lp.getDonGia());
+            ps.setString(1, tt.getMaHD());
+            ps.setTimestamp(2, tt.getNgayThanhToan() != null ? Timestamp.valueOf(tt.getNgayThanhToan()) : null);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -72,14 +73,12 @@ public class LoaiPhongDAOImpl implements LoaiPhongDAO {
     }
 
     @Override
-    public boolean update(LoaiPhong lp) {
-        String sql = "UPDATE LoaiPhong SET TenLoaiPhong=?, SucChua=?, DonGia=? WHERE MaLoaiPhong=?";
+    public boolean update(ThanhToan tt) {
+        String sql = "UPDATE ThanhToan SET NgayThanhToan=? WHERE MaHD=?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, lp.getTenLoaiPhong());
-            ps.setShort(2, lp.getSucChua());
-            ps.setBigDecimal(3, lp.getDonGia());
-            ps.setString(4, lp.getMaLoaiPhong());
+            ps.setTimestamp(1, tt.getNgayThanhToan() != null ? Timestamp.valueOf(tt.getNgayThanhToan()) : null);
+            ps.setString(2, tt.getMaHD());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -88,11 +87,11 @@ public class LoaiPhongDAOImpl implements LoaiPhongDAO {
     }
 
     @Override
-    public boolean delete(String maLoaiPhong) {
-        String sql = "DELETE FROM LoaiPhong WHERE MaLoaiPhong=?";
+    public boolean delete(String maHD) {
+        String sql = "DELETE FROM ThanhToan WHERE MaHD=?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, maLoaiPhong);
+            ps.setString(1, maHD);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

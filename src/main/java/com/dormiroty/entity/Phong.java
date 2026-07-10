@@ -1,50 +1,26 @@
 package com.dormiroty.entity;
 
 public class Phong {
-    private String MaPhong;
-    private String MaLoaiPhong;
-    private String MaToaNha;
-    private String TinhTrang;
+    private String maPhong;
+    private String maLoaiPhong;
+    private String maToaNha;
+    private int soChoTrong;
+    private String trangThai;
 
-    public Phong() {
-    }
+    public Phong() {}
 
-    public Phong(String maPhong, String maLoaiPhong, String maToaNha, String tinhTrang) {
-        MaPhong = maPhong;
-        MaLoaiPhong = maLoaiPhong;
-        MaToaNha = maToaNha;
-        TinhTrang = tinhTrang;
-    }
+    public String getMaPhong() { return maPhong; }
+    public void setMaPhong(String maPhong) { this.maPhong = maPhong; }
 
-    public String getMaPhong() {
-        return MaPhong;
-    }
+    public String getMaLoaiPhong() { return maLoaiPhong; }
+    public void setMaLoaiPhong(String maLoaiPhong) { this.maLoaiPhong = maLoaiPhong; }
 
-    public void setMaPhong(String maPhong) {
-        MaPhong = maPhong;
-    }
+    public String getMaToaNha() { return maToaNha; }
+    public void setMaToaNha(String maToaNha) { this.maToaNha = maToaNha; }
 
-    public String getMaLoaiPhong() {
-        return MaLoaiPhong;
-    }
+    public int getSoChoTrong() { return soChoTrong; }
+    public void setSoChoTrong(int soChoTrong) { this.soChoTrong = soChoTrong; }
 
-    public void setMaLoaiPhong(String maLoaiPhong) {
-        MaLoaiPhong = maLoaiPhong;
-    }
-
-    public String getMaToaNha() {
-        return MaToaNha;
-    }
-
-    public void setMaToaNha(String maToaNha) {
-        MaToaNha = maToaNha;
-    }
-
-    public String getTinhTrang() {
-        return TinhTrang;
-    }
-
-    public void setTinhTrang(String tinhTrang) {
-        TinhTrang = tinhTrang;
-    }
+    public String getTrangThai() { return trangThai; }
+    public void setTrangThai(String trangThai) { this.trangThai = trangThai; }
 }

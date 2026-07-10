@@ -25,7 +25,7 @@ public class HopDongDAOImpl implements HopDongDAO {
             while (rs.next()) {
                 HopDong hd = new HopDong();
                 hd.setMaHopDong(rs.getString("MaHopDong").trim());
-                hd.setMSSV(rs.getInt("MSSV"));
+                hd.setMssv(rs.getString("MSSV").trim());
                 hd.setMaNV(rs.getString("MaNV").trim());
 
                 hd.setTienCoc(rs.getBigDecimal("TienCoc"));
@@ -55,7 +55,7 @@ public class HopDongDAOImpl implements HopDongDAO {
                 if (rs.next()) {
                     HopDong hd = new HopDong();
                     hd.setMaHopDong(rs.getString("MaHopDong").trim());
-                    hd.setMSSV(rs.getInt("MSSV"));
+                    hd.setMssv(rs.getString("MSSV").trim());
                     hd.setMaNV(rs.getString("MaNV").trim());
 
                     hd.setTienCoc(rs.getBigDecimal("TienCoc"));
@@ -78,19 +78,20 @@ public class HopDongDAOImpl implements HopDongDAO {
 
     @Override
     public boolean save(HopDong hd) {
-        String sql = "INSERT INTO HopDong(MaHopDong, MSSV, MaNV, TienCoc, NgayHetHan, NgayLap, MaPhong) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        // Thêm NgayVaoO và TrangThai_HopDong vào câu SQL
+        String sql = "INSERT INTO HopDong(MaHopDong, MSSV, MaNV, TienCoc, NgayHetHan, NgayLap, MaPhong, NgayVaoO, TrangThai_HopDong) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, hd.getMaHopDong());
-            ps.setInt(2, hd.getMSSV()); // Đã sửa thành getMSSV
+            ps.setString(2, hd.getMssv()); // Đã sửa thành String
             ps.setString(3, hd.getMaNV());
-
             ps.setBigDecimal(4, hd.getTienCoc());
-
-            ps.setTimestamp(5, Timestamp.valueOf(hd.getNgayHetHan()));
-            ps.setTimestamp(6, Timestamp.valueOf(hd.getNgayLap()));
-
+            ps.setTimestamp(5, hd.getNgayHetHan() != null ? Timestamp.valueOf(hd.getNgayHetHan()) : null);
+            ps.setTimestamp(6, hd.getNgayLap() != null ? Timestamp.valueOf(hd.getNgayLap()) : null);
             ps.setString(7, hd.getMaPhong());
+            ps.setTimestamp(8, hd.getNgayVaoO() != null ? Timestamp.valueOf(hd.getNgayVaoO()) : null);
+            ps.setString(9, hd.getTrangThaiHopDong());
+
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -103,7 +104,7 @@ public class HopDongDAOImpl implements HopDongDAO {
         String sql = "UPDATE HopDong SET MSSV=?, MaNV=?, TienCoc=?, NgayHetHan=?, NgayLap=?, MaPhong=? WHERE MaHopDong=?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, hd.getMSSV());
+            ps.setString(1, hd.getMssv());
             ps.setString(2, hd.getMaNV());
 
             ps.setBigDecimal(3, hd.getTienCoc());

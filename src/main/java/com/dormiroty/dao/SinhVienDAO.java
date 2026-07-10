@@ -6,10 +6,10 @@ import java.util.List;
 
 public interface SinhVienDAO {
     List<SinhVien> findAll();
-    SinhVien findById(int mssv);
+    SinhVien findById(String mssv);
     boolean save(SinhVien sv);
     boolean update(SinhVien sv);
-    boolean delete(int mssv);
+    boolean delete(String mssv);
     List<SinhVien> findByName(String name);
     int countTotalSinhVien();
 }

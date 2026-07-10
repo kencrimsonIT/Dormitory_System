@@ -1,7 +1,6 @@
 package com.dormiroty.dao;
 
 import com.dormiroty.entity.Phong;
-
 import java.util.List;
 
 public interface PhongDAO {
