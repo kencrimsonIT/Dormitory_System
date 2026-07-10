@@ -1,7 +1,8 @@
-package com.dormiroty.view;
+package com.dormiroty.view.panels;
 
 import com.dormiroty.controller.ToaNhaController;
 import com.dormiroty.entity.ToaNha;
+import com.dormiroty.view.utils.ThemeUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -29,30 +30,24 @@ public class ToaNhaPanel extends JPanel {
 
         controller = new ToaNhaController();
 
-        setLayout(new GridLayout(8, 2, 5, 5));
+        setLayout(new BorderLayout(10, 10));
+        setBackground(ThemeUtils.BG_PANEL);
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        txtMaToaNha = new JTextField();
-        txtTenToaNha = new JTextField();
-        txtLoaiToaNha = new JTextField();
+        JPanel formPanel = ThemeUtils.createFormPanel("Thông tin tòa nhà", 2);
 
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
+        txtMaToaNha = ThemeUtils.createTextField(15);
+        txtTenToaNha = ThemeUtils.createTextField(15);
+        txtLoaiToaNha = ThemeUtils.createTextField(15);
 
-        add(new JLabel("Mã tòa nhà"));
-        add(txtMaToaNha);
+        btnThem = ThemeUtils.createSuccessButton("Thêm");
+        btnSua = ThemeUtils.createPrimaryButton("Sửa");
+        btnXoa = ThemeUtils.createDangerButton("Xóa");
+        JPanel btnPanel = ThemeUtils.createButtonPanel(btnThem, btnSua, btnXoa);
 
-        add(new JLabel("Tên tòa nhà"));
-        add(txtTenToaNha);
-
-        add(new JLabel("Loại tòa nhà"));
-        add(txtLoaiToaNha);
-
-        add(btnThem);
-        add(btnSua);
-
-        add(btnXoa);
-        add(new JLabel(""));
+        addFormRow(formPanel, 0, 0, "Mã tòa nhà", txtMaToaNha);
+        addFormRow(formPanel, 0, 1, "Tên tòa nhà", txtTenToaNha);
+        addFormRow(formPanel, 1, 0, "Loại tòa nhà", txtLoaiToaNha);
 
         String[] columns = {
                 "Mã tòa nhà",
@@ -63,12 +58,19 @@ public class ToaNhaPanel extends JPanel {
         model = new DefaultTableModel(columns, 0);
         table = new JTable(model);
 
+        ThemeUtils.styleTable(table);
         JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane);
+        scrollPane.setBorder(BorderFactory.createLineBorder(ThemeUtils.BORDER_COLOR, 1, true));
+
+        JPanel northPanel = new JPanel(new BorderLayout(10, 10));
+        northPanel.setOpaque(false);
+        northPanel.add(formPanel, BorderLayout.NORTH);
+        northPanel.add(btnPanel, BorderLayout.SOUTH);
+
+        add(northPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
 
         loadTable();
-
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         table.getSelectionModel().addListSelectionListener(e -> {
 
@@ -115,6 +117,22 @@ public class ToaNhaPanel extends JPanel {
                 loadTable();
             }
         });
+    }
+
+    private void addFormRow(JPanel panel, int row, int col, String label, JComponent field) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 6, 4, 6);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JLabel lbl = ThemeUtils.createLabel(label);
+        gbc.gridx = col * 2;
+        gbc.gridy = row;
+        gbc.weightx = 0.0;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(lbl, gbc);
+        gbc.gridx = col * 2 + 1;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel.add(field, gbc);
     }
 
     private void loadTable() {

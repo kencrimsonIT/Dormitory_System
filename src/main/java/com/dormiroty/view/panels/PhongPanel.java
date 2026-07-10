@@ -1,19 +1,14 @@
-package com.dormiroty.view;
+package com.dormiroty.view.panels;
 
-import java.awt.GridLayout;
+import java.awt.*;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import com.dormiroty.controller.PhongController;
 import com.dormiroty.entity.Phong;
+import com.dormiroty.view.utils.ThemeUtils;
 
 public class PhongPanel extends JPanel {
 
@@ -37,38 +32,28 @@ public class PhongPanel extends JPanel {
     public PhongPanel() {
 
         controller = new PhongController();
-        setLayout(new GridLayout(10, 2, 5, 5));
+        setLayout(new BorderLayout(10, 10));
+        setBackground(ThemeUtils.BG_PANEL);
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        txtMaPhong = new JTextField();
-        txtMaLoaiPhong = new JTextField();
-        txtMaToaNha = new JTextField();
-        txtSoChoTrong = new JTextField();
-        txtTrangThai = new JTextField();
+        JPanel formPanel = ThemeUtils.createFormPanel("Thông tin phòng", 2);
 
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
+        txtMaPhong = ThemeUtils.createTextField(15);
+        txtMaLoaiPhong = ThemeUtils.createTextField(15);
+        txtMaToaNha = ThemeUtils.createTextField(15);
+        txtSoChoTrong = ThemeUtils.createTextField(15);
+        txtTrangThai = ThemeUtils.createTextField(15);
 
-        add(new JLabel("Mã phòng"));
-        add(txtMaPhong);
+        btnThem = ThemeUtils.createSuccessButton("Thêm");
+        btnSua = ThemeUtils.createPrimaryButton("Sửa");
+        btnXoa = ThemeUtils.createDangerButton("Xóa");
+        JPanel btnPanel = ThemeUtils.createButtonPanel(btnThem, btnSua, btnXoa);
 
-        add(new JLabel("Mã loại phòng"));
-        add(txtMaLoaiPhong);
-
-        add(new JLabel("Mã tòa nhà"));
-        add(txtMaToaNha);
-
-        add(new JLabel("Số chỗ trống"));
-        add(txtSoChoTrong);
-
-        add(new JLabel("Trạng thái"));
-        add(txtTrangThai);
-
-        add(btnThem);
-        add(btnSua);
-
-        add(btnXoa);
-        add(new JLabel(""));
+        addFormRow(formPanel, 0, 0, "Mã phòng", txtMaPhong);
+        addFormRow(formPanel, 0, 1, "Mã loại phòng", txtMaLoaiPhong);
+        addFormRow(formPanel, 1, 0, "Mã tòa nhà", txtMaToaNha);
+        addFormRow(formPanel, 1, 1, "Số chỗ trống", txtSoChoTrong);
+        addFormRow(formPanel, 2, 0, "Trạng thái", txtTrangThai);
 
         String[] columns = {
                 "Mã phòng",
@@ -80,9 +65,18 @@ public class PhongPanel extends JPanel {
 
         model = new DefaultTableModel(columns, 0);
         table = new JTable(model);
+        ThemeUtils.styleTable(table);
 
         JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane);
+        scrollPane.setBorder(BorderFactory.createLineBorder(ThemeUtils.BORDER_COLOR, 1, true));
+
+        JPanel northPanel = new JPanel(new BorderLayout(10, 10));
+        northPanel.setOpaque(false);
+        northPanel.add(formPanel, BorderLayout.NORTH);
+        northPanel.add(btnPanel, BorderLayout.SOUTH);
+
+        add(northPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
 
         loadTable();
 
@@ -155,6 +149,22 @@ public class PhongPanel extends JPanel {
         txtMaToaNha.setText("");
         txtSoChoTrong.setText("");
         txtTrangThai.setText("");
+    }
+
+    private void addFormRow(JPanel panel, int row, int col, String label, JComponent field) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 6, 4, 6);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JLabel lbl = ThemeUtils.createLabel(label);
+        gbc.gridx = col * 2;
+        gbc.gridy = row;
+        gbc.weightx = 0.0;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(lbl, gbc);
+        gbc.gridx = col * 2 + 1;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel.add(field, gbc);
     }
 
     private void loadTable() {

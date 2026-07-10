@@ -1,22 +1,16 @@
-package com.dormiroty.view;
+package com.dormiroty.view.panels;
 
-import java.awt.GridLayout;
+import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import com.dormiroty.controller.LS_ViPhamController;
 import com.dormiroty.entity.LS_ViPham;
+import com.dormiroty.view.utils.ThemeUtils;
 
 public class LS_ViPhamPanel extends JPanel {
 
@@ -48,53 +42,38 @@ public class LS_ViPhamPanel extends JPanel {
 
         controller = new LS_ViPhamController();
 
-        setLayout(new GridLayout(12,2,5,5));
+        setLayout(new BorderLayout(10, 10));
+        setBackground(ThemeUtils.BG_PANEL);
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        txtMaLS = new JTextField();
-        txtMaLoaiVP = new JTextField();
-        txtMSSV = new JTextField();
-        txtNgayVP = new JTextField();
-        txtMaNV = new JTextField();
-        txtTimKiem = new JTextField();
+        JPanel formPanel = ThemeUtils.createFormPanel("Lịch sử vi phạm", 2);
 
-        cboHinhThuc = new JComboBox<>(new String[]{
-                "Cảnh cáo",
-                "Khiển trách",
-                "Phạt tiền",
-                "Đình chỉ"
-        });
+        txtMaLS = ThemeUtils.createTextField(15);
+        txtMaLoaiVP = ThemeUtils.createTextField(15);
+        txtMSSV = ThemeUtils.createTextField(15);
+        txtNgayVP = ThemeUtils.createTextField(15);
+        txtMaNV = ThemeUtils.createTextField(15);
+        cboHinhThuc = ThemeUtils.createComboBox(new String[]{"Cảnh cáo", "Khiển trách", "Phạt tiền", "Đình chỉ"});
 
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
-        btnTim = new JButton("Tìm");
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
+        searchPanel.setOpaque(false);
+        JLabel lblTim = ThemeUtils.createLabel("Tìm theo MSSV:");
+        txtTimKiem = ThemeUtils.createTextField(20);
+        searchPanel.add(lblTim);
+        searchPanel.add(txtTimKiem);
 
-        add(new JLabel("Mã LS Vi Phạm"));
-        add(txtMaLS);
+        btnThem = ThemeUtils.createSuccessButton("Thêm");
+        btnSua = ThemeUtils.createPrimaryButton("Sửa");
+        btnXoa = ThemeUtils.createDangerButton("Xóa");
+        btnTim = ThemeUtils.createWarningButton("Tìm");
+        JPanel btnPanel = ThemeUtils.createButtonPanel(btnThem, btnSua, btnXoa, btnTim);
 
-        add(new JLabel("Mã Loại Vi Phạm"));
-        add(txtMaLoaiVP);
-
-        add(new JLabel("MSSV"));
-        add(txtMSSV);
-
-        add(new JLabel("Ngày Vi Phạm (yyyy-MM-dd HH:mm)"));
-        add(txtNgayVP);
-
-        add(new JLabel("Mã Nhân Viên"));
-        add(txtMaNV);
-
-        add(new JLabel("Hình Thức Xử Lý"));
-        add(cboHinhThuc);
-
-        add(new JLabel("Tìm theo MSSV"));
-        add(txtTimKiem);
-
-        add(btnThem);
-        add(btnSua);
-
-        add(btnXoa);
-        add(btnTim);
+        addFormRow(formPanel, 0, 0, "Mã LS Vi Phạm", txtMaLS);
+        addFormRow(formPanel, 0, 1, "Mã Loại Vi Phạm", txtMaLoaiVP);
+        addFormRow(formPanel, 1, 0, "MSSV", txtMSSV);
+        addFormRow(formPanel, 1, 1, "Ngày Vi Phạm", txtNgayVP);
+        addFormRow(formPanel, 2, 0, "Mã Nhân Viên", txtMaNV);
+        addFormRow(formPanel, 2, 1, "Hình Thức XL", cboHinhThuc);
 
         String[] columns = {
                 "Mã LS",
@@ -125,8 +104,19 @@ public class LS_ViPhamPanel extends JPanel {
 
         });
 
+        ThemeUtils.styleTable(table);
         JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane);
+        scrollPane.setBorder(BorderFactory.createLineBorder(ThemeUtils.BORDER_COLOR, 1, true));
+
+        JPanel northPanel = new JPanel(new BorderLayout(10, 10));
+        northPanel.setOpaque(false);
+        northPanel.add(formPanel, BorderLayout.NORTH);
+        northPanel.add(searchPanel, BorderLayout.CENTER);
+        northPanel.add(btnPanel, BorderLayout.SOUTH);
+
+        add(northPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+
         btnThem.addActionListener(e -> {
 
             try {
@@ -256,6 +246,22 @@ public class LS_ViPhamPanel extends JPanel {
         loadTable();
         
     }
+    private void addFormRow(JPanel panel, int row, int col, String label, JComponent field) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 6, 4, 6);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JLabel lbl = ThemeUtils.createLabel(label);
+        gbc.gridx = col * 2;
+        gbc.gridy = row;
+        gbc.weightx = 0.0;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(lbl, gbc);
+        gbc.gridx = col * 2 + 1;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel.add(field, gbc);
+    }
+
     private void loadTable() {
 
         model.setRowCount(0);

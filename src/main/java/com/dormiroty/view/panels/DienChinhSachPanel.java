@@ -1,7 +1,8 @@
-package com.dormiroty.view;
+package com.dormiroty.view.panels;
 
 import com.dormiroty.controller.DienChinhSachController;
 import com.dormiroty.entity.DienChinhSach;
+import com.dormiroty.view.utils.ThemeUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -29,30 +30,24 @@ public class DienChinhSachPanel extends JPanel {
 
         controller = new DienChinhSachController();
 
-        setLayout(new GridLayout(8, 2, 5, 5));
+        setLayout(new BorderLayout(10, 10));
+        setBackground(ThemeUtils.BG_PANEL);
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        txtMaDCS = new JTextField();
-        txtTenDCS = new JTextField();
-        txtMucNienGiam = new JTextField();
+        JPanel formPanel = ThemeUtils.createFormPanel("Thông tin diện chính sách", 2);
 
-        btnThem = new JButton("Thêm");
-        btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
+        txtMaDCS = ThemeUtils.createTextField(15);
+        txtTenDCS = ThemeUtils.createTextField(15);
+        txtMucNienGiam = ThemeUtils.createTextField(15);
 
-        add(new JLabel("Mã diện"));
-        add(txtMaDCS);
+        btnThem = ThemeUtils.createSuccessButton("Thêm");
+        btnSua = ThemeUtils.createPrimaryButton("Sửa");
+        btnXoa = ThemeUtils.createDangerButton("Xóa");
+        JPanel btnPanel = ThemeUtils.createButtonPanel(btnThem, btnSua, btnXoa);
 
-        add(new JLabel("Tên diện"));
-        add(txtTenDCS);
-
-        add(new JLabel("Mức niên giảm"));
-        add(txtMucNienGiam);
-
-        add(btnThem);
-        add(btnSua);
-
-        add(btnXoa);
-        add(new JLabel(""));
+        addFormRow(formPanel, 0, 0, "Mã diện", txtMaDCS);
+        addFormRow(formPanel, 0, 1, "Tên diện", txtTenDCS);
+        addFormRow(formPanel, 1, 0, "Mức niên giảm", txtMucNienGiam);
 
         String[] columns = {
                 "Mã diện",
@@ -63,8 +58,17 @@ public class DienChinhSachPanel extends JPanel {
         model = new DefaultTableModel(columns, 0);
         table = new JTable(model);
 
+        ThemeUtils.styleTable(table);
         JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane);
+        scrollPane.setBorder(BorderFactory.createLineBorder(ThemeUtils.BORDER_COLOR, 1, true));
+
+        JPanel northPanel = new JPanel(new BorderLayout(10, 10));
+        northPanel.setOpaque(false);
+        northPanel.add(formPanel, BorderLayout.NORTH);
+        northPanel.add(btnPanel, BorderLayout.SOUTH);
+
+        add(northPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
 
         loadTable();
 
@@ -123,6 +127,22 @@ public class DienChinhSachPanel extends JPanel {
                 loadTable();
             }
         });
+    }
+
+    private void addFormRow(JPanel panel, int row, int col, String label, JComponent field) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 6, 4, 6);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JLabel lbl = ThemeUtils.createLabel(label);
+        gbc.gridx = col * 2;
+        gbc.gridy = row;
+        gbc.weightx = 0.0;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(lbl, gbc);
+        gbc.gridx = col * 2 + 1;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel.add(field, gbc);
     }
 
     private void loadTable() {
